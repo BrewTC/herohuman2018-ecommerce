@@ -2,179 +2,262 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 在你的 index.css 或 App.css 中引入這些樣式 */
+/* slick carousel */
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
+/* =========================
+   🎨 色彩系統（Healing Bakery）
+========================= */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 背景 */
+  --bg-main: #f8f6f2;        /* 奶白 / 淺米色 */
+  --bg-soft: #ffffff;        /* 卡片用白 */
+
+  /* 文字 */
+  --text-main: #3f3a36;      /* 深暖灰，取代純黑 */
+  --text-sub: #7a736e;       /* 次要文字 */
+
+  /* 馬卡龍點綴色（低飽和） */
+  --accent-pink: #f1d6dc;    /* Pale Pink */
+  --accent-mint: #dceee7;    /* Mint Green */
+  --accent-peach: #f3dfcf;   /* Peach */
+
+  /* 線條 / 邊框 */
+  --border-soft: rgba(0, 0, 0, 0.06);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html, body {
-  overflow-x: hidden; /* 禁止頁面在桌面版左右滾動 */
-  margin: 0; /* 確保頁面無任何邊距 */
-  padding: 0; /* 確保頁面無內邊距 */
-  width: 100%; /* 確保頁面寬度滿版 */
+/* =========================
+   🧻 全站基礎設定
+========================= */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 
+    "Noto Sans TC",
+    "PingFang TC",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+  /* 柔霧感 */
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
 }
 
-/* 限制桌面版的最大寬度 */
+/* =========================
+   📐 版心容器
+========================= */
 .container {
-  max-width: 1200px; /* 設定一個你希望的最大寬度 */
-  margin: 0 auto; /* 讓容器在桌面中居中 */
-  padding: 0 15px; /* 確保左右有間距 */
-  box-sizing: border-box; /* 包括 padding 和 border 進入寬度計算 */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-/* 手機版自適應 */
-@media (max-width: 767px) {
-  .container {
-    width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
+/* =========================
+   ✨ 通用文字優化
+========================= */
+h1, h2, h3, h4 {
+  letter-spacing: 0.02em;
+}
 
-  /* 確保圖片和元素自適應 */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+p {
+  color: var(--text-sub);
+}
 
-  /* 修改字型大小以適應手機 */
+/* =========================
+   🫧 卡片 / 區塊（商品、表單）
+========================= */
+.card,
+.product-item,
+.checkout-card {
+  background-color: var(--bg-soft);
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+
+  /* 幾乎看不到的陰影 = 空氣感 */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* hover 只微微變化 */
+.card:hover,
+.product-item:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================
+   🍞 商品圖片
+========================= */
+.product-image img {
+  border-radius: 12px;
+  background-color: #fafafa;
+}
+
+/* =========================
+   🧁 按鈕（柔霧版）
+========================= */
+button {
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+/* 主要行動按鈕 */
+.btn-primary,
+.product-item button {
+  background-color: var(--accent-peach);
+  color: var(--text-main);
+  border: none;
+}
+
+.btn-primary:hover,
+.product-item button:hover {
+  background-color: #eed3bf;
+  transform: translateY(-1px);
+}
+
+/* 次要按鈕 */
+.btn-secondary {
+  background-color: var(--accent-mint);
+  color: var(--text-main);
+}
+
+/* =========================
+   🧾 表單（結帳頁）
+========================= */
+input,
+textarea {
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  padding: 12px 14px;
+  background-color: #fff;
+  color: var(--text-main);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 0 3px rgba(241, 214, 220, 0.4);
+}
+
+/* =========================
+   🛍️ 購物車（側欄）
+========================= */
+.cart-panel {
+  background-color: var(--bg-soft);
+  border-left: 1px solid var(--border-soft);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================
+   🌸 輕水彩裝飾（可選）
+========================= */
+.bg-watercolor-pink {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(241, 214, 220, 0.6),
+    transparent 70%
+  );
+}
+
+.bg-watercolor-mint {
+  background: radial-gradient(
+    circle at 70% 40%,
+    rgba(220, 238, 231, 0.6),
+    transparent 70%
+  );
+}
+
+/* =========================
+   📱 手機優化
+========================= */
+@media (max-width: 768px) {
   html {
-    font-size: 14px; /* 設定手機顯示的基準字型大小 */
+    font-size: 14px;
   }
 
-  /* 調整產品顯示 */
-  .product-item {
-    width: calc(50% - 20px); /* 在手機視窗顯示每行2個產品 */
-    margin-bottom: 20px; /* 產品底部間距 */
+  .container {
+    padding: 0 16px;
   }
 }
 
-/* 確保滑動區域不會超出 */
+/* =========================
+   🎞️ Carousel 修飾
+========================= */
 .slick-slider {
-  width: 100%;
-  overflow: hidden; /* 隱藏超出的內容 */
+  overflow: hidden;
 }
 
 .slick-slide {
-  padding: 0 10px; /* 保證左右有間距，防止元素溢出 */
+  padding: 0 8px;
 }
 
-/* 預防圖片或內容超出容器 */
-img, .product-image, .product-info {
-  max-width: 100%;
-  box-sizing: border-box; /* 確保所有元素的大小計算包括邊距 */
+.slick-dots li button:before {
+  color: #cfc6bf;
 }
 
-
-.Grid-row .Grid-item {
-  position: relative;
-  width: 100%;
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 15px;
-  padding-right: 15px;
+.slick-dots li.slick-active button:before {
+  color: #b8ada4;
 }
 
+/* =========================
+   🍞 商品圖片 Hover 微放大
+========================= */
 
-/* 主體樣式 */
-.product-list-container {
-  padding: 16px;
-}
-
-.product-list-container h2 {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 700; /* font-bold */
-  margin-bottom: 1rem;
-}
-
-/* 產品區塊 */
 .product-item {
-  border: 1px solid #ddd; /* 畫出產品邊框 */
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加陰影 */
-  background-color: #fff; /* 背景白色 */
-  transition: box-shadow 0.3s ease; /* 當滑鼠懸停時陰影變化 */
+  overflow: hidden; /* 讓圖片放大不爆出去 */
 }
 
-.product-item:hover {
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* 滑鼠懸停時的陰影效果 */
-}
-
-/* 產品標題 */
-.product-item h3 {
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 600; /* font-semibold */
-  margin-bottom: 8px;
-  color: #333; /* 深色文字 */
-}
-
-/* 產品圖片 */
 .product-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px; /* 圓角效果 */
-  margin-bottom: 1rem; /* 底部間距 */
+  transition: transform 0.6s ease;
+  will-change: transform;
 }
 
-/* 產品價格 */
-.product-price {
-  font-size: 1rem;
-  color: #555; /* 灰色文字 */
-  margin-bottom: 1rem;
-}
-
-/* 加入購物車按鈕 */
-.product-item button {
-  padding: 8px 16px;
-  background-color: #2563eb; /* 藍色 */
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.product-item button:hover {
-  background-color: #1d4ed8; /* 滑鼠懸停顏色 */
-}
-
-/* 產品排版 */
-.product-list-container .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 自動填充產品項目，最小250px */
-  gap: 16px;
-}
-
-@media (min-width: 640px) {
-  /* 小尺寸設備以上的排版，雙列 */
-  .product-list-container .grid {
-    grid-template-columns: repeat(2, 1fr);
+/* 只在桌機 hover，手機不觸發 */
+@media (hover: hover) and (pointer: fine) {
+  .product-item:hover .product-image img {
+    transform: scale(1.06);
   }
 }
 
+/* =========================
+   🎞️ Banner / Carousel 尺寸系統
+========================= */
+
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 預設：手機 */
+.carousel-container img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+/* 平板 */
+@media (min-width: 640px) {
+  .carousel-container img {
+    height: 260px;
+  }
+}
+
+/* 桌機 */
 @media (min-width: 1024px) {
-  /* 大尺寸設備以上的排版，三列 */
-  .product-list-container .grid {
-    grid-template-columns: repeat(3, 1fr);
+  .carousel-container img {
+    height: 360px;
   }
 }

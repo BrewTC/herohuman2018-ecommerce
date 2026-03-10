@@ -107,7 +107,7 @@ export async function POST(req) {
     });
 
     // 生成確認頁面 HTML
-    const paymentUrl = process.env.ECPAY_PAYMENT_URL || 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+    const paymentUrl = process.env.ECPAY_PAYMENT_URL // || 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
     const formHtml = `
       <html>
       <head>

@@ -20,7 +20,7 @@ export default function ProductList() {
       {/* 產品區域 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => (
-          <div key={product.id} className="border p-4 rounded-lg shadow flex flex-col items-center text-center">
+          <div key={product.id} className="product-item border p-4 rounded-lg shadow flex flex-col items-center text-center">
             <div className="product-image mb-2"> {/* 減少圖片下方的間距 */}
               <img src={product.imageUrl} alt={product.name} className="w-full h-auto" />
             </div>
