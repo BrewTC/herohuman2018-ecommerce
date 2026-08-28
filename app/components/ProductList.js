@@ -1,40 +1,108 @@
 "use client";
+import { useState } from "react";
 import { useCart } from "./CartContext";
+import { products } from "../data/products";
+import ProductModal from "./ProductModal";
 
-const products = [
-  { id: 1, name: "原味貝果", price: 45, imageUrl: "/original_bagel_800px_800px.jpg" },
-  { id: 2, name: "可可貝果", price: 65, imageUrl: "/chocolate_Bagel_800px_800px.jpg" },
-  { id: 3, name: "3入月餅", price: 250, imageUrl: "/3pcs_mooncakes_800px_800px.jpg" },
-  { id: 4, name: "6入月餅", price: 450, imageUrl: "/6pcs_mooncakes_800px_800px.jpg" },
-  { id: 5, name: "千層蛋塔 經典原味(4入一盒)", price: 220, imageUrl: "https://shoplineimg.com/62d43627545586001513ac71/66fa60182e32e300101e57d9/375x.webp?source_format=png" },
-  // 添加更多產品
-];
-
-export default function ProductList() {
+export default function ProductList({ searchQuery = "" }) {
   const { addToCart } = useCart(); // 使用購物車功能
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredProducts = products.filter((product) => {
+    if (!normalizedQuery) return true;
+
+    const searchableText = [
+      product.name,
+      product.summary,
+      product.description,
+      product.ingredients,
+      product.storage,
+      product.serving,
+      product.allergens,
+      ...product.highlights,
+      ...product.specs,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(normalizedQuery);
+  });
+
+  const handleProductKeyDown = (event, product) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setSelectedProduct(product);
+    }
+  };
 
   return (
-    <div className="p-4">
+    <div className="px-3 py-4 sm:p-4">
+      <div className="product-shipping-notice mx-auto mb-4 max-w-3xl px-4 py-3 text-center text-sm font-bold sm:text-base">
+        2026中秋月餅預計發貨時間：9/19(六)～9/21(一）
+      </div>
+
       <h2 className="text-xl font-bold mb-4 text-center">精選商品</h2>
 
-      {/* 產品區域 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.map((product) => (
-          <div key={product.id} className="product-item border p-4 rounded-lg shadow flex flex-col items-center text-center">
-            <div className="product-image mb-2"> {/* 減少圖片下方的間距 */}
-              <img src={product.imageUrl} alt={product.name} className="w-full h-auto" />
+      {normalizedQuery && (
+        <p className="mb-4 text-center text-sm" style={{ color: "var(--text-sub)" }}>
+          搜尋「{searchQuery}」找到 {filteredProducts.length} 項商品
+        </p>
+      )}
+
+      {filteredProducts.length === 0 ? (
+        <div className="empty-products mx-auto max-w-md px-4 py-10 text-center">
+          <h3 className="text-lg font-bold">找不到符合的商品</h3>
+          <p className="mt-2 text-sm" style={{ color: "var(--text-sub)" }}>
+            可以試試「貝果」、「月餅」、「蛋塔」或其他關鍵字。
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {filteredProducts.map((product) => (
+          <div
+            key={product.id}
+            className="product-item flex flex-col p-2.5 sm:p-4 text-center"
+          >
+            <div
+              className="product-image mb-1.5 aspect-square cursor-pointer overflow-hidden rounded-xl bg-[#fafafa]"
+              role="button"
+              tabIndex={0}
+              aria-label={`查看 ${product.name} 詳細說明`}
+              onClick={() => setSelectedProduct(product)}
+              onKeyDown={(event) => handleProductKeyDown(event, product)}
+            >
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h3 className="text-lg font-semibold mb-1">{product.name}</h3> {/* 減少商品名稱下方的間距 */}
-            <p className="text-gray-600 mb-2">${product.price}</p> {/* 減少價格下方的間距 */}
+            <h3 className="product-card-title text-sm sm:text-base font-semibold line-clamp-2">
+              {product.name}
+            </h3>
+            <p className="product-card-price text-sm sm:text-base" style={{ color: "var(--text-sub)" }}>
+              ${product.price}
+            </p>
+            <p className="product-card-summary line-clamp-2 text-xs sm:text-sm" style={{ color: "var(--text-sub)" }}>
+              {product.summary}
+            </p>
             <button
+              type="button"
               onClick={() => addToCart(product)}
-              className="mt-2 bg-blue-600 text-white py-1 px-3 rounded"
+              className="btn-primary product-cart-button mt-auto w-full py-1.5 px-3 text-sm sm:text-base"
             >
               加入購物車
             </button>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={addToCart}
+      />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
+import '../../lib/loadServerEnv';
+import { createProductOrder, isSupabaseConfigured } from '../../lib/supabaseAdmin';
 
 function calculateCheckMacValue(params) {
   const { ECPAY_HASH_KEY, ECPAY_HASH_IV } = process.env;
@@ -17,7 +19,6 @@ function calculateCheckMacValue(params) {
   const sortedKeys = Object.keys(params).sort();
   const rawData = sortedKeys.map((key) => `${key}=${params[key]}`).join('&');
   const checkValueString = `HashKey=${ECPAY_HASH_KEY}&${rawData}&HashIV=${ECPAY_HASH_IV}`;
-  console.log('CheckMacValue 輸入:', checkValueString);
 
   let encodedString = encodeURIComponent(checkValueString)
     .replace(/%2[dD]/g, '-')
@@ -35,15 +36,14 @@ function calculateCheckMacValue(params) {
     .update(encodedString)
     .digest('hex')
     .toUpperCase();
-  console.log('CheckMacValue 輸出:', checkMacValue);
 
   return checkMacValue;
 }
 
 export async function POST(req) {
   try {
-    const { orderId, amount, itemName, name, email, phone, address } = await req.json();
-    console.log('接收到的請求資料:', { orderId, amount, itemName, name, email, phone, address });
+    const { orderId, amount, itemName, name, email, phone, address, items = [] } = await req.json();
+    console.log('接收到的請求資料:', { orderId, amount, itemName, name, email, phone, address, itemCount: items.length });
 
     // 驗證必要參數
     if (!orderId) {
@@ -74,6 +74,65 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+    if (!Array.isArray(items) || items.length === 0) {
+      return NextResponse.json(
+        { success: false, message: '缺少訂單商品明細' },
+        { status: 400 }
+      );
+    }
+
+    const cleanItems = items.map((item) => ({
+      item_type: 'product',
+      item_id: String(item.id ?? ''),
+      item_name: String(item.name ?? '').slice(0, 120),
+      unit_price: Math.round(Number(item.price)),
+      quantity: Math.round(Number(item.quantity)),
+      subtotal: Math.round(Number(item.price) * Number(item.quantity)),
+      raw_payload: item,
+    }));
+
+    if (cleanItems.some((item) => !item.item_name || item.unit_price < 0 || item.quantity <= 0 || item.subtotal < 0)) {
+      return NextResponse.json(
+        { success: false, message: '訂單商品明細格式不正確' },
+        { status: 400 }
+      );
+    }
+
+    const calculatedAmount = cleanItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+    if (calculatedAmount !== Math.round(Number(amount))) {
+      return NextResponse.json(
+        { success: false, message: '訂單金額與商品明細不符' },
+        { status: 400 }
+      );
+    }
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { success: false, message: '尚未設定 Supabase 訂單資料庫環境變數' },
+        { status: 500 }
+      );
+    }
+
+    await createProductOrder({
+      order: {
+        order_no: orderId.slice(0, 20),
+        order_type: 'product',
+        customer_name: name.slice(0, 50),
+        email: email.slice(0, 120),
+        phone: phone.slice(0, 20),
+        address: address?.slice(0, 200) || '',
+        total_amount: Math.round(amount),
+        payment_status: 'pending_payment',
+        fulfillment_status: 'unfulfilled',
+        ecpay_merchant_trade_no: orderId.slice(0, 20),
+        raw_payload: {
+          itemName,
+          items,
+        },
+      },
+      items: cleanItems,
+    });
 
     // 交易日期
     const MerchantTradeDate = new Date()
@@ -98,16 +157,16 @@ export async function POST(req) {
     };
 
     tradeData.CheckMacValue = calculateCheckMacValue({ ...tradeData });
-    console.log('生成的綠界參數:', tradeData);
+    console.log('生成綠界付款參數:', { MerchantTradeNo: tradeData.MerchantTradeNo, TotalAmount: tradeData.TotalAmount });
 
     // 將 itemName 分割為單個商品項目
-    const items = itemName.split('#').map((item) => {
+    const displayItems = itemName.split('#').map((item) => {
       const [name, quantity] = item.split(' x');
       return { name, quantity: parseInt(quantity) };
     });
 
     // 生成確認頁面 HTML
-    const paymentUrl = process.env.ECPAY_PAYMENT_URL // || 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+    const paymentUrl = process.env.ECPAY_PAYMENT_URL || process.env.ECPAY_CHECKOUT_URL || 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
     const formHtml = `
       <html>
       <head>
@@ -137,7 +196,7 @@ export async function POST(req) {
         <div class="section">
           <h3>訂單明細</h3>
           <div class="items">
-            ${items
+            ${displayItems
               .map(
                 (item) =>
                   `<div class="item"><span>${item.name}</span><span>x${item.quantity}</span></div>`

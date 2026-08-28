@@ -5,37 +5,58 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const slides = [
+  {
+    src: "/mooncake_6pcs_assorted.png",
+    alt: "喜洛六入綜合月餅禮盒",
+  },
+  {
+    src: "/mooncake_3pcs_assorted.png",
+    alt: "喜洛三入綜合月餅禮盒",
+  },
+];
+
+function CarouselArrow({ direction, onClick }) {
+  const isNext = direction === "next";
+
+  return (
+    <button
+      type="button"
+      className={`carousel-arrow ${isNext ? "carousel-arrow-next" : "carousel-arrow-prev"}`}
+      aria-label={isNext ? "下一張輪播圖" : "上一張輪播圖"}
+      onClick={onClick}
+    >
+      <span aria-hidden="true">{isNext ? "›" : "‹"}</span>
+    </button>
+  );
+}
+
 const Carousel = () => {
   const settings = {
     infinite: true,
-    speed: 500,
+    speed: 750,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 5000,
+    arrows: true,
+    prevArrow: <CarouselArrow direction="prev" />,
+    nextArrow: <CarouselArrow direction="next" />,
   };
 
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        <div className="Grid-row">
-          <div className="Grid-item">
-            <img 
-              src="https://img.shoplineapp.com/media/image_clips/66fa4fd2f4ec27000ed66680/original.png?1727680461" 
-              alt="slide1" 
-              style={{ width: '100%' }} 
-            />
+        {slides.map((slide) => (
+          <div key={slide.src} className="Grid-row">
+            <div className="Grid-item">
+              <img
+                src={slide.src}
+                alt={slide.alt}
+              />
+            </div>
           </div>
-        </div>
-        <div className="Grid-row">
-          <div className="Grid-item">
-            <img 
-              src="https://shoplineimg.com/62d43627545586001513ac71/66d6c7fcd288d70013f3ca6b/375x.webp?source_format=jpg%20375w" 
-              alt="slide2" 
-              style={{ width: '100%' }} 
-            />
-          </div>
-        </div>
+        ))}
       </Slider>
     </div>
   );

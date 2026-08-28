@@ -1,0 +1,87 @@
+// import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+// import { experiences } from "../data/experiences";
+
+export const metadata = {
+  title: "食農教育體驗 | 喜洛烘焙商店",
+};
+
+export default function ExperiencesPage() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header showSearch={false} />
+      <main className="content-page flex-1 px-4 py-10">
+        <section className="mx-auto max-w-6xl">
+          <p className="page-kicker">Experience</p>
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">食農教育體驗</h1>
+              <p className="mt-3 max-w-2xl text-base leading-8">
+                透過食材觀察、手作烘焙與節慶飲食故事，讓孩子與大人用更貼近生活的方式認識食物、土地與日常餐桌。
+              </p>
+              <div className="info-panel mt-5 max-w-2xl p-5">
+                <h2 className="text-lg font-bold">目前暫未開放報名課程</h2>
+                <p className="mt-2 text-sm leading-7">
+                  食農教育體驗與節慶點心課程正在規劃中，後續開放報名時會再於網站與社群公告。謝謝你對喜洛課程的期待。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* #
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            {experiences.map((experience) => {
+              const firstSession = experience.sessions[0];
+
+              return (
+                <article key={experience.id} className="experience-card overflow-hidden">
+                  <div className="experience-image">
+                    <img src={experience.imageUrl} alt={experience.title} />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-sm font-semibold" style={{ color: "var(--text-sub)" }}>
+                      {experience.subtitle}
+                    </p>
+                    <h2 className="mt-1 text-xl font-bold">{experience.title}</h2>
+                    <p className="mt-3 text-sm leading-7">
+                      {experience.summary}
+                    </p>
+
+                    <dl className="experience-meta mt-4 grid gap-2 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt>費用</dt>
+                        <dd>NT$ {experience.price} / 人</dd>
+                      </div>
+                      <div>
+                        <dt>時間</dt>
+                        <dd>{experience.duration}</dd>
+                      </div>
+                      <div>
+                        <dt>近期場次</dt>
+                        <dd>{firstSession.date} {firstSession.time}</dd>
+                      </div>
+                      <div>
+                        <dt>剩餘名額</dt>
+                        <dd>{firstSession.remaining} 位</dd>
+                      </div>
+                    </dl>
+
+                    <Link
+                      href={`/experiences/${experience.id}`}
+                      className="btn-primary mt-5 inline-flex w-full justify-center py-2.5 text-sm sm:w-auto sm:px-6"
+                    >
+                      查看課程與報名
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          */}
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}

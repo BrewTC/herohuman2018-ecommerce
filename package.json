@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8080",
-    "build": "next build",
-    "start": "next start -p 8080",
-    "lint": "next lint"
+    "dev": "ECOM_ENV=local next dev -p 8080",
+    "dev:8081": "ECOM_ENV=local next dev -p 8081",
+    "dev:prod": "ECOM_ENV=prod next dev -p 8080",
+    "dev:prod:8081": "ECOM_ENV=prod next dev -p 8081",
+    "build": "ECOM_ENV=prod next build",
+    "build:local": "ECOM_ENV=local next build",
+    "start": "ECOM_ENV=prod next start -p 8080",
+    "lint": "eslint ."
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
