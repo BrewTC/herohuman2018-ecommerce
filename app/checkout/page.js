@@ -34,12 +34,6 @@ export default function CheckoutPage() {
   // 計算總金額
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  // 商品名稱
-  const itemName = cart
-    .map((item) => `${item.name.substring(0, 30)} x${item.quantity}`)
-    .join('#')
-    .slice(0, 380);
-
   // 表單輸入
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,19 +63,9 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (!itemName) {
-      setError('商品名稱無效，請確認您的購物車');
-      return;
-    }
-
     // ===== 新增：欄位長度限制 =====
     if (formData.address.length > 200) {
       setError('地址過長（限制200字）');
-      return;
-    }
-
-    if (itemName.length > 400) {
-      setError('商品名稱過長');
       return;
     }
 
@@ -106,17 +90,10 @@ export default function CheckoutPage() {
       })),
     });
 
-    // ===== 生成 orderId =====
-    const timestamp = Date.now().toString(36);
-    const randomStr = Math.random().toString(36).substr(2, 4);
-    const orderId = `ORD${timestamp}${randomStr}`.slice(0, 20);
-
     try {
 
       console.log('發送至 /api/ecpay 的資料:', {
-        orderId,
-        amount: totalPrice,
-        itemName,
+        expectedAmount: totalPrice,
         name: cleanName,
         email: formData.email,
         phone: formData.phone,
@@ -130,17 +107,13 @@ export default function CheckoutPage() {
         },
 
         body: JSON.stringify({
-          orderId,
-          amount: totalPrice,
-          itemName,
+          expectedAmount: totalPrice,
           name: cleanName,
           email: formData.email,
           phone: formData.phone,
           address: cleanAddress,
           items: cart.map((item) => ({
             id: item.id,
-            name: item.name,
-            price: item.price,
             quantity: item.quantity,
           })),
         }),

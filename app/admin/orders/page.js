@@ -1,5 +1,5 @@
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import AdminShell from "../../components/AdminShell";
+import { requireAdmin } from "../../lib/adminAuth";
 import { isSupabaseConfigured, listOrders } from "../../lib/supabaseAdmin";
 
 export const metadata = {
@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 export default async function AdminOrdersPage() {
+  const user = await requireAdmin();
   let orders = [];
   let error = "";
 
@@ -21,14 +22,12 @@ export default async function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header showSearch={false} />
-      <main className="content-page flex-1 px-4 py-10">
+    <AdminShell user={user}>
         <section className="mx-auto max-w-6xl">
           <p className="page-kicker">Admin</p>
           <h1 className="mt-2 text-3xl font-bold">訂單紀錄</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7">
-            這是第一版本機管理頁，用來確認訂單是否成功寫入 Supabase。正式部署前請務必加入後台登入或權限保護。
+            查看最近 50 筆訂單、付款結果與出貨所需的商品明細。
           </p>
 
           {error ? (
@@ -113,9 +112,7 @@ export default async function AdminOrdersPage() {
             </div>
           )}
         </section>
-      </main>
-      <Footer />
-    </div>
+    </AdminShell>
   );
 }
 

@@ -2,6 +2,22 @@ import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import '../../lib/loadServerEnv';
 import { createProductOrder, isSupabaseConfigured } from '../../lib/supabaseAdmin';
+import { resolveCheckoutProducts } from '../../lib/productCatalog';
+
+function createMerchantTradeNo() {
+  const timestamp = Date.now().toString(36);
+  const random = crypto.randomBytes(4).toString('hex');
+  return `ORD${timestamp}${random}`.slice(0, 20);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 function calculateCheckMacValue(params) {
   const { ECPAY_HASH_KEY, ECPAY_HASH_IV } = process.env;
@@ -42,35 +58,31 @@ function calculateCheckMacValue(params) {
 
 export async function POST(req) {
   try {
-    const { orderId, amount, itemName, name, email, phone, address, items = [] } = await req.json();
-    console.log('接收到的請求資料:', { orderId, amount, itemName, name, email, phone, address, itemCount: items.length });
+    const { expectedAmount, name, email, phone, address, items = [] } = await req.json();
+    console.log('接收到商品訂單請求:', { expectedAmount, itemCount: items.length });
+
+    const customerName = String(name ?? '').trim().slice(0, 50);
+    const customerEmail = String(email ?? '').trim().toLowerCase().slice(0, 120);
+    const customerPhone = String(phone ?? '').trim().slice(0, 20);
+    const customerAddress = String(address ?? '').trim().slice(0, 200);
 
     // 驗證必要參數
-    if (!orderId) {
-      console.log('缺少 orderId:', orderId);
-      return NextResponse.json(
-        { success: false, message: '缺少訂單編號' },
-        { status: 400 }
-      );
-    }
-    if (!amount || amount <= 0) {
-      console.log('無效金額:', amount);
-      return NextResponse.json(
-        { success: false, message: '金額無效或缺失' },
-        { status: 400 }
-      );
-    }
-    if (!itemName || itemName.trim() === '') {
-      console.log('無效商品名稱:', itemName);
-      return NextResponse.json(
-        { success: false, message: '商品名稱無效或缺失' },
-        { status: 400 }
-      );
-    }
-    if (!name || !email || !phone) {
-      console.log('缺少客戶資訊:', { name, email, phone });
+    if (!customerName || !customerEmail || !customerPhone) {
+      console.log('商品訂單缺少必要的顧客欄位');
       return NextResponse.json(
         { success: false, message: '缺少客戶姓名、電子郵件或電話' },
+        { status: 400 }
+      );
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      return NextResponse.json(
+        { success: false, message: '電子郵件格式不正確' },
+        { status: 400 }
+      );
+    }
+    if (!/^\d{10}$/.test(customerPhone)) {
+      return NextResponse.json(
+        { success: false, message: '電話號碼需為 10 位數字' },
         { status: 400 }
       );
     }
@@ -81,31 +93,49 @@ export async function POST(req) {
       );
     }
 
-    const cleanItems = items.map((item) => ({
-      item_type: 'product',
-      item_id: String(item.id ?? ''),
-      item_name: String(item.name ?? '').slice(0, 120),
-      unit_price: Math.round(Number(item.price)),
-      quantity: Math.round(Number(item.quantity)),
-      subtotal: Math.round(Number(item.price) * Number(item.quantity)),
-      raw_payload: item,
-    }));
-
-    if (cleanItems.some((item) => !item.item_name || item.unit_price < 0 || item.quantity <= 0 || item.subtotal < 0)) {
+    if (items.length > 50) {
       return NextResponse.json(
-        { success: false, message: '訂單商品明細格式不正確' },
+        { success: false, message: '單筆訂單商品種類過多' },
         { status: 400 }
       );
     }
 
+    const { items: resolvedItems, source: catalogSource } = await resolveCheckoutProducts(items);
+    const cleanItems = resolvedItems.map(({ product, quantity, subtotal }) => ({
+      item_type: 'product',
+      item_id: String(product.id),
+      item_name: product.name.slice(0, 120),
+      unit_price: product.price,
+      quantity,
+      subtotal,
+      raw_payload: {
+        product_id: product.id,
+        legacy_id: product.legacyId,
+        sku: product.sku,
+        slug: product.slug,
+      },
+    }));
     const calculatedAmount = cleanItems.reduce((sum, item) => sum + item.subtotal, 0);
 
-    if (calculatedAmount !== Math.round(Number(amount))) {
+    if (calculatedAmount <= 0) {
       return NextResponse.json(
-        { success: false, message: '訂單金額與商品明細不符' },
+        { success: false, message: '訂單金額無效' },
         { status: 400 }
       );
     }
+
+    if (Math.round(Number(expectedAmount)) !== calculatedAmount) {
+      return NextResponse.json(
+        { success: false, message: '商品價格已有更新，請重新整理頁面後再結帳' },
+        { status: 409 }
+      );
+    }
+
+    const orderId = createMerchantTradeNo();
+    const itemName = cleanItems
+      .map((item) => `${item.item_name.substring(0, 30)} x${item.quantity}`)
+      .join('#')
+      .slice(0, 380);
 
     if (!isSupabaseConfigured()) {
       return NextResponse.json(
@@ -118,17 +148,18 @@ export async function POST(req) {
       order: {
         order_no: orderId.slice(0, 20),
         order_type: 'product',
-        customer_name: name.slice(0, 50),
-        email: email.slice(0, 120),
-        phone: phone.slice(0, 20),
-        address: address?.slice(0, 200) || '',
-        total_amount: Math.round(amount),
+        customer_name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+        address: customerAddress,
+        total_amount: calculatedAmount,
         payment_status: 'pending_payment',
         fulfillment_status: 'unfulfilled',
         ecpay_merchant_trade_no: orderId.slice(0, 20),
         raw_payload: {
           itemName,
-          items,
+          catalogSource,
+          items: cleanItems.map((item) => item.raw_payload),
         },
       },
       items: cleanItems,
@@ -147,7 +178,7 @@ export async function POST(req) {
       MerchantTradeNo: orderId.slice(0, 20),
       MerchantTradeDate,
       PaymentType: 'aio',
-      TotalAmount: Math.round(amount),
+      TotalAmount: calculatedAmount,
       TradeDesc: '網站訂單',
       ItemName: itemName.slice(0, 200),
       ReturnURL: process.env.ECPAY_RETURN_URL || 'https://www.facebook.com/herohuman2018/',
@@ -157,7 +188,7 @@ export async function POST(req) {
     };
 
     tradeData.CheckMacValue = calculateCheckMacValue({ ...tradeData });
-    console.log('生成綠界付款參數:', { MerchantTradeNo: tradeData.MerchantTradeNo, TotalAmount: tradeData.TotalAmount });
+    console.log('生成綠界付款參數:', { MerchantTradeNo: tradeData.MerchantTradeNo, TotalAmount: tradeData.TotalAmount, catalogSource });
 
     // 將 itemName 分割為單個商品項目
     const displayItems = itemName.split('#').map((item) => {
@@ -188,10 +219,10 @@ export async function POST(req) {
         <h2>訂單確認</h2>
         <div class="section">
           <h3>客戶資訊</h3>
-          <p><strong>姓名:</strong> ${name}</p>
-          <p><strong>電子郵件:</strong> ${email}</p>
-          <p><strong>電話號碼:</strong> ${phone}</p>
-          <p><strong>住址:</strong> ${address || '未提供'}</p>
+          <p><strong>姓名:</strong> ${escapeHtml(customerName)}</p>
+          <p><strong>電子郵件:</strong> ${escapeHtml(customerEmail)}</p>
+          <p><strong>電話號碼:</strong> ${escapeHtml(customerPhone)}</p>
+          <p><strong>住址:</strong> ${escapeHtml(customerAddress || '未提供')}</p>
         </div>
         <div class="section">
           <h3>訂單明細</h3>
@@ -199,16 +230,16 @@ export async function POST(req) {
             ${displayItems
               .map(
                 (item) =>
-                  `<div class="item"><span>${item.name}</span><span>x${item.quantity}</span></div>`
+                  `<div class="item"><span>${escapeHtml(item.name)}</span><span>x${item.quantity}</span></div>`
               )
               .join('')}
           </div>
-          <div class="total">總金額：$${Math.round(amount)}</div>
+          <div class="total">總金額：$${calculatedAmount}</div>
         </div>
         <form id="ecpay-form" action="${paymentUrl}" method="POST">
           ${Object.keys(tradeData)
             .map(
-              (key) => `<input type="hidden" name="${key}" value="${tradeData[key]}">`
+              (key) => `<input type="hidden" name="${escapeHtml(key)}" value="${escapeHtml(tradeData[key])}">`
             )
             .join('\n')}
           <button type="submit">前往綠界付款</button>

@@ -111,9 +111,10 @@ export default function ProductModal({ product, onClose, onAddToCart }) {
                     onAddToCart(product);
                     onClose();
                   }}
+                  disabled={product.isSoldOut}
                   className="btn-primary py-2.5"
                 >
-                  加入購物車
+                  {product.isSoldOut ? "目前售完" : "加入購物車"}
                 </button>
               </div>
             </div>

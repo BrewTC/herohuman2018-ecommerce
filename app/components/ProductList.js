@@ -1,13 +1,41 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
-import { products } from "../data/products";
+import { products as initialProducts } from "../data/products";
 import ProductModal from "./ProductModal";
 
 export default function ProductList({ searchQuery = "" }) {
   const { addToCart } = useCart(); // 使用購物車功能
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState(initialProducts);
   const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadProducts = async () => {
+      try {
+        const response = await fetch("/api/products", {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (!response.ok) return;
+
+        const result = await response.json();
+        if (Array.isArray(result.products)) {
+          setProducts(result.products);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.warn("商品資料更新失敗，保留目前顯示內容");
+        }
+      }
+    };
+
+    loadProducts();
+    return () => controller.abort();
+  }, []);
+
   const filteredProducts = products.filter((product) => {
     if (!normalizedQuery) return true;
 
@@ -90,9 +118,10 @@ export default function ProductList({ searchQuery = "" }) {
             <button
               type="button"
               onClick={() => addToCart(product)}
+              disabled={product.isSoldOut}
               className="btn-primary product-cart-button mt-auto w-full py-1.5 px-3 text-sm sm:text-base"
             >
-              加入購物車
+              {product.isSoldOut ? "目前售完" : "加入購物車"}
             </button>
           </div>
           ))}
