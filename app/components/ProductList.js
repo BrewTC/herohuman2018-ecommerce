@@ -38,7 +38,8 @@ export default function ProductList({ searchQuery = "" }) {
   return (
     <div className="px-3 py-4 sm:p-4">
       <div className="product-shipping-notice mx-auto mb-4 max-w-3xl px-4 py-3 text-center text-sm font-bold sm:text-base">
-        2026中秋月餅預計發貨時間：9/19(六)～9/21(一）
+        <span>喜洛9月份陸續進行月餅訂單製作</span>
+        <span>中秋月餅預計發貨時間：9/19(六)～9/21(一）</span>
       </div>
 
       <h2 className="text-xl font-bold mb-4 text-center">精選商品</h2>

@@ -429,6 +429,583 @@ p {
 }
 
 /* =========================
+   首頁食品人工具入口
+========================= */
+.home-apps-section {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0)),
+    var(--bg-main);
+  border-top: 1px solid rgba(148, 115, 92, 0.14);
+  border-bottom: 1px solid rgba(148, 115, 92, 0.14);
+}
+
+.home-apps-copy {
+  display: grid;
+  gap: 16px;
+}
+
+.home-apps-copy h1 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(2rem, 3.35vw, 3rem);
+  font-weight: 900;
+  line-height: 1.12;
+}
+
+.home-apps-copy > p:not(.page-kicker) {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.85;
+}
+
+.home-apps-more-link,
+.home-app-card a {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background-color: var(--text-main);
+  color: #fffdf8;
+  padding: 9px 16px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.home-apps-more-link:hover,
+.home-app-card a:hover {
+  background-color: #5f4635;
+  transform: translateY(-1px);
+}
+
+.home-apps-card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-app-card {
+  display: grid;
+  min-height: 260px;
+  align-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background-color: rgba(255, 253, 248, 0.9);
+  padding: 22px;
+  box-shadow: 0 10px 28px rgba(84, 61, 45, 0.08);
+}
+
+.home-app-heading {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.home-app-logo {
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+  object-position: center;
+  justify-self: stretch;
+  border-radius: 16px;
+  background-color: #fff;
+  padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(148, 115, 92, 0.1);
+}
+
+.home-app-title-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.home-app-title-copy span {
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.home-app-title-copy h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.home-app-card p {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.78;
+}
+
+.home-app-card:nth-child(1) {
+  background-color: #fff7ef;
+}
+
+.home-app-card:nth-child(2) {
+  background-color: #f3fbf6;
+}
+
+.home-app-card a {
+  background-color: var(--accent-pink);
+  color: var(--text-main);
+}
+
+.home-app-card a:hover {
+  background-color: #efa4ae;
+}
+
+@media (min-width: 1024px) {
+  .home-apps-copy h1 {
+    white-space: nowrap;
+  }
+}
+
+/* =========================
+   食品人工具頁
+========================= */
+.apps-hero {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0)),
+    var(--bg-main);
+}
+
+.apps-hero-copy {
+  max-width: 820px;
+}
+
+.apps-lead {
+  max-width: 720px;
+  color: var(--text-main);
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.apps-side-note {
+  display: grid;
+  gap: 22px;
+  max-width: 980px;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 247, 239, 0.92), rgba(243, 251, 246, 0.92)),
+    var(--bg-soft);
+  padding: 26px;
+  box-shadow: 0 12px 30px rgba(84, 61, 45, 0.08);
+}
+
+.apps-side-note-header {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.apps-side-note-header span {
+  display: inline-flex;
+  width: 58px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background-color: var(--accent-mint);
+  color: var(--text-main);
+  font-weight: 900;
+}
+
+.apps-side-note-header div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.apps-side-note-header p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.apps-side-note-header h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.apps-side-note-header .apps-side-note-intro {
+  max-width: 680px;
+  margin-top: 6px;
+  color: var(--text-sub);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.7;
+  text-transform: none;
+}
+
+.apps-service-tag-grid {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid rgba(148, 115, 92, 0.16);
+  border-bottom: 1px solid rgba(148, 115, 92, 0.16);
+}
+
+.apps-service-tag {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 18px 16px;
+}
+
+.apps-service-tag:nth-child(odd) {
+  border-right: 1px solid rgba(148, 115, 92, 0.16);
+}
+
+.apps-service-tag:nth-child(-n + 2) {
+  border-bottom: 1px solid rgba(148, 115, 92, 0.16);
+}
+
+.apps-service-tag > span {
+  color: #a36f69;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.apps-service-tag > div {
+  display: grid;
+  gap: 5px;
+}
+
+.apps-service-tag strong {
+  color: var(--text-main);
+  font-size: 0.96rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.apps-service-tag p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.apps-consult-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.68);
+  padding: 16px 18px;
+}
+
+.apps-consult-copy {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.apps-consult-icon {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--accent-pink);
+  color: var(--text-main);
+}
+
+.apps-consult-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.apps-consult-copy strong {
+  color: var(--text-main);
+  font-size: 0.96rem;
+}
+
+.apps-consult-copy p {
+  max-width: 520px;
+  margin: 3px 0 0;
+  color: var(--text-sub);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.apps-consult-action {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 6px;
+  justify-items: end;
+}
+
+.apps-consult-action > span {
+  color: var(--text-sub);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.apps-consult-link {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background-color: var(--text-main);
+  color: #fffdf8;
+  padding: 8px 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.apps-consult-link:hover {
+  background-color: #5f4635;
+  transform: translateY(-1px);
+}
+
+@media (min-width: 1024px) {
+  .apps-side-note-header {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .apps-side-note-header > span {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@media (max-width: 639px) {
+  .apps-side-note {
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .apps-side-note-header {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .apps-side-note-header > span {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+  }
+
+  .apps-side-note-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .apps-service-tag-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .apps-service-tag,
+  .apps-service-tag:nth-child(odd),
+  .apps-service-tag:nth-child(-n + 2) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(148, 115, 92, 0.16);
+  }
+
+  .apps-service-tag:last-child {
+    border-bottom: 0;
+  }
+
+  .apps-consult-row {
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .apps-consult-action {
+    justify-items: start;
+    padding-left: 54px;
+  }
+
+  .apps-consult-link {
+    max-width: 100%;
+    font-size: 0.84rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+.apps-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-tool-card {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background-color: var(--bg-soft);
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.app-tool-heading {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.app-tool-logo {
+  width: 74px;
+  height: 74px;
+  object-fit: cover;
+  object-position: center;
+  justify-self: stretch;
+  border-radius: 16px;
+  background-color: #fff;
+  padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(148, 115, 92, 0.1);
+}
+
+.app-tool-title-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.app-tool-title-copy p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.app-tool-card h3 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.app-tool-card > p {
+  margin: 0;
+  line-height: 1.85;
+}
+
+.app-tool-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-tool-card li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.app-tool-card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--accent-pink);
+}
+
+.app-tool-card a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  border-radius: 999px;
+  background-color: var(--accent-peach);
+  color: var(--text-main);
+  padding: 8px 16px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.app-tool-card a:hover {
+  background-color: #eed3bf;
+  transform: translateY(-1px);
+}
+
+.apps-use-band {
+  background-color: rgba(220, 238, 231, 0.34);
+  border-top: 1px solid var(--border-soft);
+}
+
+.apps-use-list {
+  display: grid;
+  gap: 14px;
+}
+
+.apps-use-item {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.82);
+  padding: 18px;
+}
+
+.apps-use-item span {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: var(--accent-peach);
+  color: var(--text-main);
+  font-weight: 900;
+}
+
+.apps-use-item p {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.75;
+}
+
+/* =========================
    全站 Footer / 客服資訊
 ========================= */
 .site-footer {
@@ -781,11 +1358,17 @@ p {
 }
 
 .product-shipping-notice {
+  display: grid;
+  gap: 2px;
   border: 1px solid rgba(241, 214, 220, 0.82);
-  border-radius: 999px;
+  border-radius: 14px;
   background-color: #fff7f8;
   color: var(--text-main);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.product-shipping-notice span:first-child {
+  color: #9b5f68;
 }
 
 /* =========================
@@ -1036,6 +1619,52 @@ select:focus {
   }
 
   .about-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-apps-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-app-card {
+    min-height: 0;
+  }
+
+  .home-app-heading {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .home-app-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .app-tool-heading {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .app-tool-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .apps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .apps-service-tag-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .apps-service-tag {
+    min-height: 0;
+  }
+
+  .app-tool-card {
+    padding: 20px;
+  }
+
+  .apps-use-item {
     grid-template-columns: 1fr;
   }
 

@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "會員專區 | 喜洛烘焙商店",
+  title: "會員專區 | 喜洛 HeroHuman",
 };
 
 export default function MembersPage() {

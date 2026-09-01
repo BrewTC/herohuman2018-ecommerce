@@ -3,7 +3,7 @@ import Footer from "../../components/Footer";
 import { isSupabaseConfigured, listOrders } from "../../lib/supabaseAdmin";
 
 export const metadata = {
-  title: "訂單紀錄 | 喜洛烘焙商店",
+  title: "訂單紀錄 | 喜洛 HeroHuman",
 };
 
 export default async function AdminOrdersPage() {

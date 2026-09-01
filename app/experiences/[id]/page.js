@@ -17,12 +17,12 @@ export async function generateMetadata({ params }) {
 
   if (!experience) {
     return {
-      title: "找不到課程 | 喜洛烘焙商店",
+      title: "找不到課程 | 喜洛 HeroHuman",
     };
   }
 
   return {
-    title: `${experience.subtitle} | 喜洛烘焙商店`,
+    title: `${experience.subtitle} | 喜洛 HeroHuman`,
   };
 }
 

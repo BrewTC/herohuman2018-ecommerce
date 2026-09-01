@@ -3,8 +3,8 @@ import Footer from "../components/Footer";
 import Image from "next/image";
 
 export const metadata = {
-  title: "品牌故事 | 喜洛 Hero Human",
-  description: "喜洛 Hero Human 的品牌故事、烘焙理念、在地食材與食農教育服務。",
+  title: "品牌故事 | 喜洛 HeroHuman",
+  description: "喜洛 HeroHuman 的品牌故事、烘焙理念、在地食材與食農教育服務。",
 };
 
 const milestones = [
@@ -49,7 +49,7 @@ export default function AboutPage() {
             <div>
               <p className="page-kicker">Brand Story</p>
               <h1 className="mt-3 text-4xl font-bold leading-tight sm:text-5xl">
-                喜洛 Hero Human
+                喜洛 HeroHuman
               </h1>
               <p className="about-lead mt-6">
                 我們不是只想賣食品，我們想幫一個好產品走得更遠。
@@ -78,7 +78,7 @@ export default function AboutPage() {
         <section className="px-4 py-10 sm:px-6">
           <div className="mx-auto max-w-6xl">
             <div className="about-section-heading">
-              <p className="page-kicker">Hero Human</p>
+              <p className="page-kicker">HeroHuman</p>
               <h2>在日常裡，用心呵護別人的人</h2>
             </div>
 
@@ -159,7 +159,7 @@ export default function AboutPage() {
               <p className="page-kicker">From Enya & Matt</p>
               <h2>我們是喜洛共同創辦人</h2>
               <p>
-                每個好的產品，都值得被好好看見，也值得擁有轉型升級的可能。<br></br>如果你也認同喜洛的品牌理念，期待看見更多屬於食品人的故事，歡迎持續追蹤喜洛 Hero Human。
+                每個好的產品，都值得被好好看見，也值得擁有轉型升級的可能。<br></br>如果你也認同喜洛的品牌理念，期待看見更多屬於食品人的故事，歡迎持續追蹤喜洛 HeroHuman。
               </p>
             </div>
           </div>

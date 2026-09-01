@@ -7,6 +7,7 @@ const navItems = [
   { label: "主頁", href: "/" },
   { label: "線上商城", href: "/#products" },
   { label: "食農教育體驗", href: "/experiences" },
+  { label: "食品人工具", href: "/apps" },
   { label: "會員專區", href: "/members" },
   { label: "關於喜洛", href: "/about" },
 ];

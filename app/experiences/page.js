@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 // import { experiences } from "../data/experiences";
 
 export const metadata = {
-  title: "食農教育體驗 | 喜洛烘焙商店",
+  title: "食農教育體驗 | 喜洛 HeroHuman",
 };
 
 export default function ExperiencesPage() {
